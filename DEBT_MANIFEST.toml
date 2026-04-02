@@ -1,0 +1,364 @@
+# Debt Manifest -- Ground truth for Go HTTP Service Benchmark
+# Hand-crafted intentional flaws in an order management microservice
+# Categories: scalability, code-quality, style (mapped to virgil-cli pipelines)
+
+[metadata]
+total_files = 28
+total_lines = 2622
+generated = "2026-04-02"
+
+# =============================================================================
+# cmd/server/main.go
+# =============================================================================
+
+[[debt]]
+file = "cmd/server/main.go"
+line = 28
+category = "code-quality"
+pattern = "god-functions"
+description = "main() is a 127-line god function handling server setup, routing, middleware, worker init, graceful shutdown, and health checks"
+severity = "high"
+
+[[debt]]
+file = "cmd/server/main.go"
+line = 39
+category = "code-quality"
+pattern = "magic-numbers"
+description = "db.SetMaxOpenConns(25) and SetConnMaxLifetime(300) -- hardcoded connection pool parameters without named constants"
+severity = "medium"
+
+[[debt]]
+file = "cmd/server/main.go"
+line = 105
+category = "code-quality"
+pattern = "magic-numbers"
+description = "ReadTimeout/WriteTimeout/IdleTimeout use hardcoded 30/30/120 second values without named constants"
+severity = "low"
+
+[[debt]]
+file = "cmd/server/main.go"
+line = 150
+category = "style"
+pattern = "dead-code"
+description = "Unreachable variable assignments after server exit (cacheClient, memQueue, userRepo, notificationSvc never used)"
+severity = "low"
+
+# =============================================================================
+# cmd/worker/main.go
+# =============================================================================
+
+[[debt]]
+file = "cmd/worker/main.go"
+line = 23
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "go dispatcher.Start() and go scheduler.RunForever() -- goroutines spawned without context cancellation, leak on abnormal exit"
+severity = "critical"
+
+[[debt]]
+file = "cmd/worker/main.go"
+line = 38
+category = "style"
+pattern = "dead-code"
+description = "Unreachable cleanup code after infinite for loop -- fmt.Println and dispatcher.Stop() never execute"
+severity = "low"
+
+# =============================================================================
+# internal/api/handler.go
+# =============================================================================
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 44
+category = "code-quality"
+pattern = "god-functions"
+description = "CreateOrder() is a 122-line handler doing auth extraction, input parsing, validation, business logic, payment, notification, and response formatting"
+severity = "high"
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 44
+category = "code-quality"
+pattern = "function-length"
+description = "CreateOrder() handler is 122 lines, far exceeding reasonable function length"
+severity = "medium"
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 116
+category = "code-quality"
+pattern = "stringly-typed"
+description = "Order status uses string literals ('pending', 'payment_failed', 'confirmed') instead of typed constants defined in model"
+severity = "medium"
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 158
+category = "style"
+pattern = "duplicate-code"
+description = "Response construction pattern (Content-Type + WriteHeader + json.NewEncoder) duplicated across CreateOrder, GetOrder, and ListOrders handlers"
+severity = "medium"
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 212
+category = "code-quality"
+pattern = "magic-numbers"
+description = "limit := 20 -- hardcoded page size without named constant"
+severity = "low"
+
+# =============================================================================
+# internal/api/middleware.go
+# =============================================================================
+
+[[debt]]
+file = "internal/api/middleware.go"
+line = 80
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "Rate limit cleanup goroutine started with no cancellation mechanism -- leaks for the lifetime of the process"
+severity = "high"
+
+[[debt]]
+file = "internal/api/middleware.go"
+line = 129
+category = "style"
+pattern = "dead-code"
+description = "CORSMiddleware(), RecoveryMiddleware(), and RequestIDMiddleware() are defined but never registered in the router middleware chain"
+severity = "low"
+
+# =============================================================================
+# internal/service/order.go
+# =============================================================================
+
+[[debt]]
+file = "internal/service/order.go"
+line = 38
+category = "scalability"
+pattern = "n-plus-one-queries"
+description = "CreateOrder() fetches each product price individually in a loop instead of batch query"
+severity = "high"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 50
+category = "scalability"
+pattern = "n-plus-one-queries"
+description = "CreateOrder() decrements stock per item in a loop instead of batch update"
+severity = "high"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 78
+category = "scalability"
+pattern = "n-plus-one-queries"
+description = "GetOrder() fetches product names one by one in a loop for each order item"
+severity = "high"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 100
+category = "scalability"
+pattern = "n-plus-one-queries"
+description = "ListOrders() fetches items separately for each order in a loop"
+severity = "high"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 136
+category = "code-quality"
+pattern = "deep-nesting"
+description = "_ = err error swallowed inside nested for-loop/if-block during stock restore, partial rollback on failure"
+severity = "medium"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 145
+category = "code-quality"
+pattern = "magic-numbers"
+description = "FindByUserID(userID, 10000, 0) -- hardcoded 10000 limit to fetch all orders, no real pagination"
+severity = "medium"
+
+[[debt]]
+file = "internal/service/order.go"
+line = 175
+category = "style"
+pattern = "dead-code"
+description = "ProcessExpiredOrders() and calculateDiscount() are defined but never called from any handler or worker"
+severity = "low"
+
+# =============================================================================
+# internal/service/payment.go
+# =============================================================================
+
+[[debt]]
+file = "internal/service/payment.go"
+line = 44
+category = "scalability"
+pattern = "sync-blocking-in-async"
+description = "ProcessPayment() makes a blocking HTTP POST to external payment gateway in the request handler path, blocking goroutine for up to 30s"
+severity = "high"
+
+[[debt]]
+file = "internal/service/payment.go"
+line = 77
+category = "scalability"
+pattern = "sync-blocking-in-async"
+description = "RefundPayment() makes a blocking HTTP POST to external payment gateway, same blocking pattern as ProcessPayment"
+severity = "high"
+
+[[debt]]
+file = "internal/service/payment.go"
+line = 101
+category = "style"
+pattern = "dead-code"
+description = "ValidatePaymentMethod() and retryPayment() are defined but never called from any service or handler"
+severity = "low"
+
+# =============================================================================
+# internal/service/notification.go
+# =============================================================================
+
+[[debt]]
+file = "internal/service/notification.go"
+line = 26
+category = "scalability"
+pattern = "sync-blocking-in-async"
+description = "SendOrderConfirmation() makes a blocking SMTP call in the request handler path"
+severity = "high"
+
+[[debt]]
+file = "internal/service/notification.go"
+line = 62
+category = "scalability"
+pattern = "sync-blocking-in-async"
+description = "SendBulkNotification() sends emails sequentially in a loop, blocking the caller for all SMTP round trips combined"
+severity = "high"
+
+[[debt]]
+file = "internal/service/notification.go"
+line = 81
+category = "style"
+pattern = "dead-code"
+description = "ScheduleReminder() is defined but never called from any handler or worker"
+severity = "low"
+
+# =============================================================================
+# internal/worker/dispatcher.go
+# =============================================================================
+
+[[debt]]
+file = "internal/worker/dispatcher.go"
+line = 93
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "ProcessJobs() spawns one goroutine per job without context or WaitGroup -- goroutines leak if dispatcher stops"
+severity = "critical"
+
+[[debt]]
+file = "internal/worker/dispatcher.go"
+line = 82
+category = "scalability"
+pattern = "resource-exhaustion"
+description = "ProcessJobs() spawns unbounded goroutines per batch with no concurrency limit, can exhaust memory with large batches"
+severity = "critical"
+
+[[debt]]
+file = "internal/worker/dispatcher.go"
+line = 133
+category = "style"
+pattern = "dead-code"
+description = "collectResults() method is defined but never called from Start() or any external module"
+severity = "low"
+
+# =============================================================================
+# internal/worker/processor.go
+# =============================================================================
+
+[[debt]]
+file = "internal/worker/processor.go"
+line = 42
+category = "code-quality"
+pattern = "deep-nesting"
+description = "Process() has 4 levels of nesting: for > if > if > if/else -- retry logic with deeply nested control flow"
+severity = "medium"
+
+[[debt]]
+file = "internal/worker/processor.go"
+line = 50
+category = "code-quality"
+pattern = "magic-numbers"
+description = "attempt < 3 and timeout: 30 -- hardcoded retry count and timeout without named constants"
+severity = "medium"
+
+[[debt]]
+file = "internal/worker/processor.go"
+line = 79
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "ProcessBatch() creates done channel with hardcoded buffer of 10, causing goroutine leak when len(jobs) > 10"
+severity = "high"
+
+# =============================================================================
+# internal/worker/scheduler.go
+# =============================================================================
+
+[[debt]]
+file = "internal/worker/scheduler.go"
+line = 60
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "RunForever() spawns goroutines per scheduled task with no WaitGroup or context -- goroutines leak indefinitely on shutdown"
+severity = "critical"
+
+# =============================================================================
+# internal/config/config.go
+# =============================================================================
+
+[[debt]]
+file = "internal/config/config.go"
+line = 44
+category = "code-quality"
+pattern = "magic-numbers"
+description = "Load() contains 6+ hardcoded default values (8080, 25, 5, 300, 10, 587) without named constants"
+severity = "medium"
+
+# =============================================================================
+# pkg/cache/redis.go
+# =============================================================================
+
+[[debt]]
+file = "pkg/cache/redis.go"
+line = 33
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "Get() reads from shared map without mutex -- concurrent map read causes panic under load"
+severity = "critical"
+
+[[debt]]
+file = "pkg/cache/redis.go"
+line = 49
+category = "scalability"
+pattern = "memory-leak-indicators"
+description = "Set() writes to shared map without mutex -- concurrent map write causes panic under load"
+severity = "critical"
+
+# =============================================================================
+# pkg/queue/memory.go
+# =============================================================================
+
+[[debt]]
+file = "pkg/queue/memory.go"
+line = 32
+category = "scalability"
+pattern = "sync-blocking-in-async"
+description = "Enqueue() blocks indefinitely on full channel with no timeout or context cancellation, causing goroutine pileup"
+severity = "high"
+
+[[debt]]
+file = "pkg/queue/memory.go"
+line = 70
+category = "style"
+pattern = "dead-code"
+description = "Drain() and logQueueEvent() are defined but never called from any module"
+severity = "low"
