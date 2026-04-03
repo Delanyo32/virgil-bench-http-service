@@ -362,3 +362,39 @@ category = "style"
 pattern = "dead-code"
 description = "Drain() and logQueueEvent() are defined but never called from any module"
 severity = "low"
+
+# =============================================================================
+# tech-debt -- outdated dependencies, deprecated APIs, legacy patterns
+# =============================================================================
+
+[[debt]]
+file = "go.mod"
+line = 1
+category = "tech-debt"
+pattern = "outdated-dependency"
+description = "go.mod specifies older Go toolchain version; should target current stable Go release for security patches and improved runtime performance"
+severity = "medium"
+
+[[debt]]
+file = "go.mod"
+line = 1
+category = "tech-debt"
+pattern = "version-drift"
+description = "Direct dependencies not pinned to specific patch versions in go.mod; go.sum ensures reproducibility but no upgrade policy prevents accumulation of patch-level drift"
+severity = "low"
+
+[[debt]]
+file = "internal/api/handler.go"
+line = 44
+category = "tech-debt"
+pattern = "deprecated-api-usage"
+description = "Uses ioutil.ReadAll() (deprecated since Go 1.16); should use io.ReadAll() from standard library -- deprecated package still imported across multiple handlers"
+severity = "low"
+
+[[debt]]
+file = "cmd/server/main.go"
+line = 28
+category = "tech-debt"
+pattern = "legacy-pattern"
+description = "HTTP handler setup uses deprecated http.Get() without context propagation; should use http.NewRequestWithContext() to allow proper cancellation and deadline propagation"
+severity = "medium"
