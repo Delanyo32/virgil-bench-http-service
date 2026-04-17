@@ -398,3 +398,28 @@ category = "tech-debt"
 pattern = "legacy-pattern"
 description = "HTTP handler setup uses deprecated http.Get() without context propagation; should use http.NewRequestWithContext() to allow proper cancellation and deadline propagation"
 severity = "medium"
+
+# Phase 2: Triaged extras - excessive_public_api
+[[debt]]
+file = "internal/config/defaults.go"
+line = 8
+category = "architecture"
+pattern = "excessive_public_api"
+description = "defaults.go exports 13 constants as public API rather than grouping under a config struct"
+severity = "low"
+
+[[debt]]
+file = "internal/model/order.go"
+line = 7
+category = "architecture"
+pattern = "excessive_public_api"
+description = "Order model exports 11 symbols mixing entity fields and helper free functions"
+severity = "low"
+
+[[debt]]
+file = "pkg/queue/priority.go"
+line = 8
+category = "architecture"
+pattern = "excessive_public_api"
+description = "priority.go exports 12 symbols - internal queue helpers leaked as public API"
+severity = "low"
