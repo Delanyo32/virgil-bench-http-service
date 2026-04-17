@@ -15,7 +15,7 @@ generated = "2026-04-02"
 file = "cmd/server/main.go"
 line = 28
 category = "code-quality"
-pattern = "god-functions"
+pattern = "god_function"
 description = "main() is a 127-line god function handling server setup, routing, middleware, worker init, graceful shutdown, and health checks"
 severity = "high"
 
@@ -23,7 +23,7 @@ severity = "high"
 file = "cmd/server/main.go"
 line = 39
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "db.SetMaxOpenConns(25) and SetConnMaxLifetime(300) -- hardcoded connection pool parameters without named constants"
 severity = "medium"
 
@@ -31,7 +31,7 @@ severity = "medium"
 file = "cmd/server/main.go"
 line = 105
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "ReadTimeout/WriteTimeout/IdleTimeout use hardcoded 30/30/120 second values without named constants"
 severity = "low"
 
@@ -39,7 +39,7 @@ severity = "low"
 file = "cmd/server/main.go"
 line = 150
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "Unreachable variable assignments after server exit (cacheClient, memQueue, userRepo, notificationSvc never used)"
 severity = "low"
 
@@ -51,7 +51,7 @@ severity = "low"
 file = "cmd/worker/main.go"
 line = 23
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "go dispatcher.Start() and go scheduler.RunForever() -- goroutines spawned without context cancellation, leak on abnormal exit"
 severity = "critical"
 
@@ -59,7 +59,7 @@ severity = "critical"
 file = "cmd/worker/main.go"
 line = 38
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "Unreachable cleanup code after infinite for loop -- fmt.Println and dispatcher.Stop() never execute"
 severity = "low"
 
@@ -71,7 +71,7 @@ severity = "low"
 file = "internal/api/handler.go"
 line = 44
 category = "code-quality"
-pattern = "god-functions"
+pattern = "god_function"
 description = "CreateOrder() is a 122-line handler doing auth extraction, input parsing, validation, business logic, payment, notification, and response formatting"
 severity = "high"
 
@@ -87,7 +87,7 @@ severity = "medium"
 file = "internal/api/handler.go"
 line = 116
 category = "code-quality"
-pattern = "stringly-typed"
+pattern = "stringly_typed_config"
 description = "Order status uses string literals ('pending', 'payment_failed', 'confirmed') instead of typed constants defined in model"
 severity = "medium"
 
@@ -95,7 +95,7 @@ severity = "medium"
 file = "internal/api/handler.go"
 line = 158
 category = "style"
-pattern = "duplicate-code"
+pattern = "potential_duplication"
 description = "Response construction pattern (Content-Type + WriteHeader + json.NewEncoder) duplicated across CreateOrder, GetOrder, and ListOrders handlers"
 severity = "medium"
 
@@ -103,7 +103,7 @@ severity = "medium"
 file = "internal/api/handler.go"
 line = 212
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "limit := 20 -- hardcoded page size without named constant"
 severity = "low"
 
@@ -115,7 +115,7 @@ severity = "low"
 file = "internal/api/middleware.go"
 line = 80
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "Rate limit cleanup goroutine started with no cancellation mechanism -- leaks for the lifetime of the process"
 severity = "high"
 
@@ -123,7 +123,7 @@ severity = "high"
 file = "internal/api/middleware.go"
 line = 129
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "CORSMiddleware(), RecoveryMiddleware(), and RequestIDMiddleware() are defined but never registered in the router middleware chain"
 severity = "low"
 
@@ -135,7 +135,7 @@ severity = "low"
 file = "internal/service/order.go"
 line = 38
 category = "scalability"
-pattern = "n-plus-one-queries"
+pattern = "query_in_loop"
 description = "CreateOrder() fetches each product price individually in a loop instead of batch query"
 severity = "high"
 
@@ -143,7 +143,7 @@ severity = "high"
 file = "internal/service/order.go"
 line = 50
 category = "scalability"
-pattern = "n-plus-one-queries"
+pattern = "query_in_loop"
 description = "CreateOrder() decrements stock per item in a loop instead of batch update"
 severity = "high"
 
@@ -151,7 +151,7 @@ severity = "high"
 file = "internal/service/order.go"
 line = 78
 category = "scalability"
-pattern = "n-plus-one-queries"
+pattern = "query_in_loop"
 description = "GetOrder() fetches product names one by one in a loop for each order item"
 severity = "high"
 
@@ -159,7 +159,7 @@ severity = "high"
 file = "internal/service/order.go"
 line = 100
 category = "scalability"
-pattern = "n-plus-one-queries"
+pattern = "query_in_loop"
 description = "ListOrders() fetches items separately for each order in a loop"
 severity = "high"
 
@@ -175,7 +175,7 @@ severity = "medium"
 file = "internal/service/order.go"
 line = 145
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "FindByUserID(userID, 10000, 0) -- hardcoded 10000 limit to fetch all orders, no real pagination"
 severity = "medium"
 
@@ -183,7 +183,7 @@ severity = "medium"
 file = "internal/service/order.go"
 line = 175
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "ProcessExpiredOrders() and calculateDiscount() are defined but never called from any handler or worker"
 severity = "low"
 
@@ -195,7 +195,7 @@ severity = "low"
 file = "internal/service/payment.go"
 line = 44
 category = "scalability"
-pattern = "sync-blocking-in-async"
+pattern = "blocking_in_async"
 description = "ProcessPayment() makes a blocking HTTP POST to external payment gateway in the request handler path, blocking goroutine for up to 30s"
 severity = "high"
 
@@ -203,7 +203,7 @@ severity = "high"
 file = "internal/service/payment.go"
 line = 77
 category = "scalability"
-pattern = "sync-blocking-in-async"
+pattern = "blocking_in_async"
 description = "RefundPayment() makes a blocking HTTP POST to external payment gateway, same blocking pattern as ProcessPayment"
 severity = "high"
 
@@ -211,7 +211,7 @@ severity = "high"
 file = "internal/service/payment.go"
 line = 101
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "ValidatePaymentMethod() and retryPayment() are defined but never called from any service or handler"
 severity = "low"
 
@@ -223,7 +223,7 @@ severity = "low"
 file = "internal/service/notification.go"
 line = 26
 category = "scalability"
-pattern = "sync-blocking-in-async"
+pattern = "blocking_in_async"
 description = "SendOrderConfirmation() makes a blocking SMTP call in the request handler path"
 severity = "high"
 
@@ -231,7 +231,7 @@ severity = "high"
 file = "internal/service/notification.go"
 line = 62
 category = "scalability"
-pattern = "sync-blocking-in-async"
+pattern = "blocking_in_async"
 description = "SendBulkNotification() sends emails sequentially in a loop, blocking the caller for all SMTP round trips combined"
 severity = "high"
 
@@ -239,7 +239,7 @@ severity = "high"
 file = "internal/service/notification.go"
 line = 81
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "ScheduleReminder() is defined but never called from any handler or worker"
 severity = "low"
 
@@ -251,7 +251,7 @@ severity = "low"
 file = "internal/worker/dispatcher.go"
 line = 93
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "ProcessJobs() spawns one goroutine per job without context or WaitGroup -- goroutines leak if dispatcher stops"
 severity = "critical"
 
@@ -259,7 +259,7 @@ severity = "critical"
 file = "internal/worker/dispatcher.go"
 line = 82
 category = "scalability"
-pattern = "resource-exhaustion"
+pattern = "potential_memory_leak"
 description = "ProcessJobs() spawns unbounded goroutines per batch with no concurrency limit, can exhaust memory with large batches"
 severity = "critical"
 
@@ -267,7 +267,7 @@ severity = "critical"
 file = "internal/worker/dispatcher.go"
 line = 133
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "collectResults() method is defined but never called from Start() or any external module"
 severity = "low"
 
@@ -287,7 +287,7 @@ severity = "medium"
 file = "internal/worker/processor.go"
 line = 50
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "attempt < 3 and timeout: 30 -- hardcoded retry count and timeout without named constants"
 severity = "medium"
 
@@ -295,7 +295,7 @@ severity = "medium"
 file = "internal/worker/processor.go"
 line = 79
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "ProcessBatch() creates done channel with hardcoded buffer of 10, causing goroutine leak when len(jobs) > 10"
 severity = "high"
 
@@ -307,7 +307,7 @@ severity = "high"
 file = "internal/worker/scheduler.go"
 line = 60
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "RunForever() spawns goroutines per scheduled task with no WaitGroup or context -- goroutines leak indefinitely on shutdown"
 severity = "critical"
 
@@ -319,7 +319,7 @@ severity = "critical"
 file = "internal/config/config.go"
 line = 44
 category = "code-quality"
-pattern = "magic-numbers"
+pattern = "magic_number"
 description = "Load() contains 6+ hardcoded default values (8080, 25, 5, 300, 10, 587) without named constants"
 severity = "medium"
 
@@ -331,7 +331,7 @@ severity = "medium"
 file = "pkg/cache/redis.go"
 line = 33
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "Get() reads from shared map without mutex -- concurrent map read causes panic under load"
 severity = "critical"
 
@@ -339,7 +339,7 @@ severity = "critical"
 file = "pkg/cache/redis.go"
 line = 49
 category = "scalability"
-pattern = "memory-leak-indicators"
+pattern = "potential_memory_leak"
 description = "Set() writes to shared map without mutex -- concurrent map write causes panic under load"
 severity = "critical"
 
@@ -351,7 +351,7 @@ severity = "critical"
 file = "pkg/queue/memory.go"
 line = 32
 category = "scalability"
-pattern = "sync-blocking-in-async"
+pattern = "blocking_in_async"
 description = "Enqueue() blocks indefinitely on full channel with no timeout or context cancellation, causing goroutine pileup"
 severity = "high"
 
@@ -359,7 +359,7 @@ severity = "high"
 file = "pkg/queue/memory.go"
 line = 70
 category = "style"
-pattern = "dead-code"
+pattern = "potentially_dead_export"
 description = "Drain() and logQueueEvent() are defined but never called from any module"
 severity = "low"
 
