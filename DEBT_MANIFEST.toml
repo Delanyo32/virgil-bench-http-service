@@ -1,10 +1,10 @@
-# Debt Manifest — auto-synced from virgil 0.4.2 on 2026-04-17
+# Debt Manifest — auto-synced from virgil 0.4.3 on 2026-04-17
 # Language: go
 
 [metadata]
 generated = "2026-04-17"
-virgil_version = "virgil 0.4.2"
-total_entries = 2113
+virgil_version = "virgil 0.4.3"
+total_entries = 2116
 
 [[debt]]
 file = "cmd/migrate/main.go"
@@ -5752,6 +5752,14 @@ severity = "info"
 
 [[debt]]
 file = "internal/config/defaults.go"
+line = 9
+category = "api_surface_area_go"
+pattern = "excessive_public_api"
+description = "Excessive public API: internal/config/defaults.go exports 13 symbols (1.00% of total)"
+severity = "info"
+
+[[debt]]
+file = "internal/config/defaults.go"
 line = 20
 category = "init_abuse"
 pattern = "init_function_abuse"
@@ -6741,6 +6749,14 @@ category = "god_struct"
 pattern = "god_struct"
 description = "struct detected -- verify it does not have too many fields (>=15) or methods (>=10) which indicates a god struct"
 severity = "warning"
+
+[[debt]]
+file = "internal/model/order.go"
+line = 8
+category = "api_surface_area_go"
+pattern = "excessive_public_api"
+description = "Excessive public API: internal/model/order.go exports 11 symbols (1.00% of total)"
+severity = "info"
 
 [[debt]]
 file = "internal/model/order.go"
@@ -16557,6 +16573,14 @@ category = "god_struct"
 pattern = "god_struct"
 description = "struct detected -- verify it does not have too many fields (>=15) or methods (>=10) which indicates a god struct"
 severity = "warning"
+
+[[debt]]
+file = "pkg/queue/priority.go"
+line = 9
+category = "api_surface_area_go"
+pattern = "excessive_public_api"
+description = "Excessive public API: pkg/queue/priority.go exports 12 symbols (0.92% of total)"
+severity = "info"
 
 [[debt]]
 file = "pkg/queue/priority.go"
